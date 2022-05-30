@@ -54,6 +54,6 @@ const listUnusedAssets = async () => {
 listUnusedAssets()
   .then(async (unusedAssets) => {
     console.log(`Found ${unusedAssets.length} unused assets`)
-    return writeFile('./output.json', JSON.stringify(unusedAssets));
+    return writeFile('./out/unreferenced_assets.json', JSON.stringify(unusedAssets));
   })
   .catch(console.error);
