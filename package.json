@@ -1,0 +1,18 @@
+{
+  "name": "simple-typescript-node-template",
+  "version": "1.0.0",
+  "description": "A simple template to write typescript for node",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/jest": "^27.0.1",
+    "jest": "^27.1.0",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.4.2"
+  }
+}
