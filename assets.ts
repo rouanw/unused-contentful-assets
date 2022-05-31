@@ -1,6 +1,6 @@
 import {Asset, createClient} from "contentful";
 import 'dotenv/config'
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 
 if (!process.env.CONTENTFUL_ACCESS_TOKEN || !process.env.CONTENTFUL_SPACE_ID) {
   throw new Error("Please specify env vars");
@@ -53,6 +53,7 @@ const listUnusedAssets = async () => {
 
 listUnusedAssets()
   .then(async (unusedAssets) => {
+    await mkdir('./out', { recursive: true });
     console.log(`Found ${unusedAssets.length} unused assets`)
     return writeFile('./out/unreferenced_assets.json', JSON.stringify(unusedAssets));
   })

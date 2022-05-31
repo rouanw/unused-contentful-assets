@@ -1,6 +1,6 @@
 import {Asset, createClient, Entry} from "contentful";
 import 'dotenv/config'
-import { writeFile } from "fs/promises";
+import {mkdir, writeFile} from "fs/promises";
 
 if (!process.env.CONTENTFUL_ACCESS_TOKEN || !process.env.CONTENTFUL_SPACE_ID) {
   throw new Error("Please specify env vars");
@@ -53,6 +53,7 @@ const listUnusedEntries = async () => {
 
 listUnusedEntries()
   .then(async (unusedEntries) => {
+    await mkdir('./out', { recursive: true });
     console.log(`Found ${unusedEntries.length} unreferenced entries. Bear in mind that these may be used via the API as a top-level object.`)
     return writeFile('./out/unreferenced_entries.json', JSON.stringify(unusedEntries));
   })
