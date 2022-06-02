@@ -1,6 +1,8 @@
-import {Asset, createClient, Entry} from "contentful";
+import {createClient, Entry} from "contentful";
 import 'dotenv/config'
 import {mkdir, writeFile} from "fs/promises";
+
+const contentType = '';
 
 if (!process.env.CONTENTFUL_ACCESS_TOKEN || !process.env.CONTENTFUL_SPACE_ID) {
   throw new Error("Please specify env vars");
@@ -16,6 +18,7 @@ async function* getEntries(): AsyncGenerator<Entry<unknown>[]> {
   do {
     const response = await client.getEntries({
       skip: progress,
+      content_type: contentType,
     });
     total = response.total;
     console.log({
@@ -43,7 +46,7 @@ const listUnusedEntries = async () => {
     for (const entry of entries) {
       const isUnused = await isEntryUnused(entry);
       if (isUnused) {
-        unusedAssets.push(entry.sys.id);
+        unusedAssets.push(`https://app.contentful.com/spaces/${process.env.CONTENTFUL_SPACE_ID}/entries/${entry.sys.id}`);
       }
     }
     result = await iterator.next();
@@ -55,6 +58,6 @@ listUnusedEntries()
   .then(async (unusedEntries) => {
     await mkdir('./out', { recursive: true });
     console.log(`Found ${unusedEntries.length} unreferenced entries. Bear in mind that these may be used via the API as a top-level object.`)
-    return writeFile('./out/unreferenced_entries.json', JSON.stringify(unusedEntries));
+    return writeFile(`./out/unreferenced_entries_${contentType}_${unusedEntries.length}.json`, JSON.stringify(unusedEntries, null, 2));
   })
   .catch(console.error);
