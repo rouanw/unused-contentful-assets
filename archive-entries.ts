@@ -2,13 +2,13 @@ import * as contentful from 'contentful-management';
 import 'dotenv/config';
 import {readFile} from "fs/promises";
 
-async function getEntriesToDelete(file: string) {
+async function getEntriesToArchive(file: string) {
   const contents = await readFile(file, 'utf8');
   const parsed = JSON.parse(contents);
   return Array.isArray(parsed) ? parsed : [];
 }
 
-async function deleteEntries(entryIds: string[]) {
+async function archiveEntries(entryIds: string[]) {
   if (!process.env.CONTENTFUL_SPACE_ID || !process.env.CONTENTFUL_MANAGEMENT_TOKEN) {
     throw ('Please set env vars');
   }
@@ -26,13 +26,13 @@ async function deleteEntries(entryIds: string[]) {
       if (entry.isPublished()) {
         await entry.unpublish();
       }
-      await entry.delete();
+      await entry.archive();
     } catch (error) {
-      console.error(`Failed to delete ${entryId}`, error);
+      console.error(`Failed to archive ${entryId}`, error);
     }
   }
 }
 
-getEntriesToDelete('./out/test.json')
-  .then(deleteEntries)
+getEntriesToArchive('./out/test.json')
+  .then(archiveEntries)
   .catch(console.error);
